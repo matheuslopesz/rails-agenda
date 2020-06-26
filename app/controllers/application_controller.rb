@@ -33,4 +33,6 @@ class ApplicationController < ActionController::Base
     User.where(token: params[:token]).last if params[:token].present?
   end
 
+  
+
 end
