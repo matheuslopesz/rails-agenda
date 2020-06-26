@@ -27,6 +27,20 @@ RSpec.describe User, type: :model do
 
   end
 
+  describe 'permissions' do
+    it 'has no master permission' do
+      user3 = FactoryBot.build(:user)
+      validation = user3.master_api(nil)
+      expect(validation).to be nil
+    end
+
+    it 'has master permission' do
+      user3 = FactoryBot.build(:user)
+      validation = user3.master_api('master')
+      expect(validation).to be true
+    end
+  end
+
   describe 'shoulda matchers' do
     subject(:user) { FactoryBot.create(:user)}
 
