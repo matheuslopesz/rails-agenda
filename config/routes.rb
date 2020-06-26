@@ -20,4 +20,21 @@ Rails.application.routes.draw do
   get '/archived' => 'messages#archived', as: 'archived'
   patch '/archive' => 'messages#archive', as: 'archive', defaults: {format: 'js'}
   patch '/archive_multiple' => 'messages#archive_multiple', as: 'archive_multiple', defaults: {format: 'js'}
+
+  # API V1
+  namespace :api do
+    namespace :v1 do
+      resources :messages, except: [:destroy, :update, :new, :edit] do
+        collection do
+          get 'sent'
+          get 'archived'
+          get 'archive_multiple'
+        end
+        member do
+          get 'archive'
+        end
+      end
+    end
+  end
+
 end
