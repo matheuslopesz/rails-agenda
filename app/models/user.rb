@@ -16,6 +16,10 @@ class User < ApplicationRecord
     Message.sent_from(self)
   end
 
+  def master_api(permission)
+    true if permission == 'master'
+  end
+  
   protected
 
   #callback to create api token when user is created
