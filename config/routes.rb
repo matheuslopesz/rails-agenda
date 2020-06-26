@@ -24,16 +24,28 @@ Rails.application.routes.draw do
   # API V1
   namespace :api do
     namespace :v1 do
+      
       resources :messages, except: [:destroy, :update, :new, :edit] do
+        
         collection do
           get 'sent'
           get 'archived'
           get 'archive_multiple'
         end
+        
         member do
           get 'archive'
         end
+      
+      
       end
+      
+      resources :users, only: [:update,:index] do
+        member do
+          get 'messages'
+        end
+      end
+
     end
   end
 
