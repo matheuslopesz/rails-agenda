@@ -31,8 +31,5 @@ class ApplicationController < ActionController::Base
 
   def api_user
     User.where(token: params[:token]).last if params[:token].present?
-  end
-
-  
-
+  end  
 end

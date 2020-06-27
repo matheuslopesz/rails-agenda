@@ -6,6 +6,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
   let(:user1) { FactoryBot.create(:user)}
   let(:invalid_user) { FactoryBot.create(:invalid_user)}
   let(:message) { FactoryBot.create(:message,to: user.id,from: user1.id)}
+  let(:message1) { FactoryBot.create(:message,to: user1.id,from: user.id)}
   let(:archived_message) { FactoryBot.create(:message,:archived,to: user.id)}
 
 
@@ -40,32 +41,43 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
     end
   end
 
- describe '#create' do
+  describe '#create' do
     before do
       allow_any_instance_of(Api::V1::MessagesController).to receive(:api_user) { user }
     end
     
     it 'create a message' do
-      expect {create_message}.to change(Message,:count).by(1)
+      post :create, params:
+                    { token: user.token, 
+                      message: 
+                        {title: 'Mensagem 1',
+                         content: 'Conteudo da mensagem',
+                         receiver_email: user1.email}
+                    }
+      expect(response).to have_http_status(:success)
     end
 
     it 'invalid a message' do
-      expect {create_invalid_message}.to_not change(Message,:count)
+      post :create, params:
+        { token: user.token, message: {title: 'mensagem invalida', content: 'Conteudo da mensagem'}}
+       expect(assigns(:message)).to_not be_valid
+    end
+  end
+
+  describe '#sent' do
+    before do
+      allow_any_instance_of(Api::V1::MessagesController).to receive(:api_user) { user }
     end
 
-    it 'has invalid token' do
-      get :index, params: { token: 'invalid_token'}
-      expect(response).to have_http_status(:unauthorized)
+    it 'show all sent messages' do
+      get :sent, params: { token: user.token }
+      expect(response).to have_http_status(:success)
     end
-  
-  end 
+  end
 
 end
 
-def create_message
-  post :create, params:
-        {message: {title: 'Mensagem 1', content: 'Conteudo da mensagem', receiver_email: user1.email}}
-end
+
 
 def create_invalid_message
   post :create, params:
