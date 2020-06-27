@@ -73,6 +73,11 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
       get :sent, params: { token: user.token }
       expect(response).to have_http_status(:success)
     end
+
+     it 'when invalid token' do
+        get :sent, params: { token: user.token }
+        expect(response).to have_http_status(:unauthorized)
+      end  
   end
 
 end
