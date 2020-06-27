@@ -114,4 +114,11 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
     end
   end
 
+  describe "#archive" do
+    it 'archive a message' do
+      get :archive, params: { token: user.token, id: message.id  }
+      expect(response).to have_http_status(:success)
+    end
+  end
+
 end
