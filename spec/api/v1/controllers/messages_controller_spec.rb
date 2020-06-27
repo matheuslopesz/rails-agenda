@@ -6,7 +6,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
   let(:user1) { FactoryBot.create(:user)}
   let(:invalid_user) { FactoryBot.create(:invalid_user)}
   let(:message) { FactoryBot.create(:message,to: user.id,from: user1.id)}
-  let(:message1) { FactoryBot.create(:message,to: user1.id,from: user.id)}
+  let(:not_message_owner) { FactoryBot.create(:message,to: user1.id,from: user.id)}
   let(:archived_message) { FactoryBot.create(:message,:archived,to: user.id)}
 
 
@@ -91,8 +91,8 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it 'list all archived messages when invalid token' do
-      get :archived, params: { token: 'invalid_token', permission: 'user'  }
+    it 'when invalid token' do
+      get :archived, params: { token: 'invalid_token' }
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -101,6 +101,16 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
     it 'show message when receiver correct' do
       get :show, params: { token: user.token, id: message.id  }
       expect(response).to have_http_status(:success)
+    end
+
+    it 'show message when receiver not the receiver' do
+      get :show, params: { token: user.token, id: not_message_owner.id  }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'when invalid token' do
+      get :show, params: { token: 'invalid_token', id: message.id  }
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

@@ -38,6 +38,8 @@ class Api::V1::MessagesController < ApplicationController
     if api_user == @message.receiver
       @message.read!
       render json: @message, status: 200
+    else
+    	render json: 'not authorized', status: 401
     end
   end
 
