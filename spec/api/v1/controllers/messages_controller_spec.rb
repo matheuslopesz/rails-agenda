@@ -80,6 +80,23 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
     end  
   end
 
+  describe "#archived" do
+    it 'list all archived messages' do
+      get :archived, params: { token: user.token, permission: 'master'  }
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'list all archived messages when invalid permission' do
+      get :archived, params: { token: user.token, permission: 'user'  }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'list all archived messages when invalid token' do
+      get :archived, params: { token: 'invalid_token', permission: 'user'  }
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
 end
 
 
