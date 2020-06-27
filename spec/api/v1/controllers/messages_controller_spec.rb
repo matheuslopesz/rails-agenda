@@ -97,11 +97,11 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
     end
   end
 
-end
+  describe "#show" do
+    it 'show message when receiver correct' do
+      get :show, params: { token: user.token, id: message.id  }
+      expect(response).to have_http_status(:success)
+    end
+  end
 
-
-
-def create_invalid_message
-  post :create, params:
-        {message: {title: 'Mensagem 1', content: 'Conteudo da mensagem'}}
 end

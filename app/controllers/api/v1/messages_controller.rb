@@ -33,6 +33,14 @@ class Api::V1::MessagesController < ApplicationController
     end
   end
 
+   def show
+    @message = Message.find(params[:id])
+    if api_user == @message.receiver
+      @message.read!
+      render json: @message, status: 200
+    end
+  end
+
   private
 
   def validate_api_token
