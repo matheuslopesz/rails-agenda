@@ -6,6 +6,8 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
   let(:user1) { FactoryBot.create(:user)}
   let(:invalid_user) { FactoryBot.create(:invalid_user)}
   let(:message) { FactoryBot.create(:message,to: user.id,from: user1.id)}
+  let(:message1) { FactoryBot.create(:message,to: user.id,from: user1.id)}
+
   let(:not_message_owner) { FactoryBot.create(:message,to: user1.id,from: user.id)}
   let(:archived_message) { FactoryBot.create(:message,:archived,to: user.id)}
 
@@ -112,6 +114,8 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
       get :show, params: { token: 'invalid_token', id: message.id  }
       expect(response).to have_http_status(:unauthorized)
     end
+
+    #not owner
   end
 
   describe "#archive" do
@@ -119,6 +123,28 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
       get :archive, params: { token: user.token, id: message.id  }
       expect(response).to have_http_status(:success)
     end
+
+    it 'archive a message thats not yours' do
+      get :archive, params: { token: user.token, id: not_message_owner.id  }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    #not owner
+  end
+
+  describe "#archive_multiple" do
+    it 'archive multiple messages' do
+      get :archive_multiple, params: { token: user.token, message_ids: [message1.id, message.id]  }
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'archive multiple messages' do
+      get :archive_multiple, params: { token: 'invalid_token', message_ids: [message1.id, message.id]  }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    #not owner
+    
   end
 
 end

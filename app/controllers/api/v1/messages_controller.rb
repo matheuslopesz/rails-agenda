@@ -35,6 +35,7 @@ class Api::V1::MessagesController < ApplicationController
   end
 
    def show
+   	# metodo verificar se é dono
     if api_user == @message.receiver
       @message.read!
       render json: @message, status: 200
@@ -44,8 +45,19 @@ class Api::V1::MessagesController < ApplicationController
   end
 
   def archive
-    @message.archived!
-    render json: @message, status: 200
+  	# metodo verificar se é dono
+    if api_user == @message.receiver
+      @message.read!
+      render json: @message, status: 200
+    else
+    	render json: 'not authorized', status: 401
+    end
+  end
+
+  def archive_multiple
+    messages = Message.find(params[:message_ids])
+    Message.archive_multiple(messages)
+    render json: messages, status: 200 
   end
 
   private
