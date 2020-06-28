@@ -28,4 +28,26 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
   end
 
+  describe '#messages' do 
+
+    context 'list messages from user' do
+      it 'when is master' do
+        get :messages, params: { id:user.id, token: user.token, permission: 'master' }
+        expect(response).to have_http_status(:success)
+      end 
+
+      it 'when is not master' do
+        get :messages, params: { id:user.id, token: user.token, permission: 'user' }
+        expect(response).to have_http_status(:unauthorized)
+      end 
+
+      it 'when invalid token' do
+        get :messages, params: { id:user.id, token: 'invalid_token', permission: 'user' }
+        expect(response).to have_http_status(:unauthorized)
+      end 
+
+    end
+    
+  end
+
 end

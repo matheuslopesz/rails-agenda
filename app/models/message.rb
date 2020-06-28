@@ -28,4 +28,11 @@ class Message < ApplicationRecord
       end
     end
   end
+
+  def self.archive_multiple(messages)
+    messages.each do |message|
+      message.archived!
+    end
+  end
+
 end
