@@ -26,6 +26,7 @@ class Api::V1::MessagesController < ApplicationController
   end
 
   def archived
+    # metodo de master ???
   	if api_user.master_api(params[:permission])
     	messages = Message.includes(:sender).archived.ordered
     	render json: messages, status: 200

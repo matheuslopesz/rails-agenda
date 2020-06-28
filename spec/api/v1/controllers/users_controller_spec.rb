@@ -50,4 +50,22 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     
   end
 
+
+  describe '#update' do 
+
+    context 'update user' do
+      it 'when is valid token' do
+        patch :update, params: { token: user.token, id: user.id, user: {name: 'Editado',email: 'editado@email.com'}}
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'when token invalid' do
+        patch :update, params: { token: 'invalid_token', id: user.id, user: {name: 'Editado',email: 'editado@email.com'}}
+        expect(response).to have_http_status(:unauthorized)  
+      end
+
+    end
+    
+  end
+
 end
