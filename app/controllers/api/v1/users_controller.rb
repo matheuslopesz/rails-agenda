@@ -1,16 +1,12 @@
 class Api::V1::UsersController < ApplicationController
-	before_action :validate_api_token
   skip_before_action :verify_authenticity_token
   before_action :set_user, except: [:index]
+  before_action :is_master?, only: [:index, :messages]
 
 
 	def index
-		if api_user.master_api(params[:permission])
-			users = User.all
-			render json: users, status: 200
-		else
-			render json: 'not authorized', status: 401
-		end 
+		users = User.all
+		render json: users, status: 200
 	end
 
 	def update
@@ -22,13 +18,9 @@ class Api::V1::UsersController < ApplicationController
   end
 
 	def messages
-    if @user.master_api(params[:permission])
-    	sent = Message.sent_from(api_user).ordered
-    	received = Message.sent_to(api_user).ordered
-    	render json: { sent: sent, received: received }, status: :ok
-    else
-			render json: 'not authorized', status: 401
-    end
+    sent = Message.sent_from(api_user).ordered
+    received = Message.sent_to(api_user).ordered
+    render json: { sent: sent, received: received }, status: :ok
   end
 
 	private
@@ -36,10 +28,9 @@ class Api::V1::UsersController < ApplicationController
 	def set_user
 		@user = User.find(params[:id])
 	end
-
-	def validate_api_token
-		################# JOGAR PRA UM FUTURO API CONTROLLER
-  	render json: 'not authorized', status: 401 if api_user.nil?  || api_user.token != params[:token]
+	
+  def is_master?
+    render json: 'not authorized', status: 401 unless params['permission'] == 'master'
   end
 
   def user_params
