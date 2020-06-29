@@ -1,4 +1,4 @@
-class Api::V1::MessagesController < ApplicationController
+class Api::V1::MessagesController < ApiController
 	skip_before_action :verify_authenticity_token
   before_action :is_master?, only: [:archived]
   before_action :set_message, only: [:show, :archive]

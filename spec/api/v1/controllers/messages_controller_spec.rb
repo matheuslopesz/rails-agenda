@@ -50,12 +50,14 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
     
     it 'create a message' do
       post :create, params:
-                    { token: user.token, 
-                      message: 
-                        {title: 'Mensagem 1',
-                         content: 'Conteudo da mensagem',
-                         receiver_email: user1.email}
-                    }
+                          { token: user.token, 
+                            message: 
+                              {
+                               title: 'Mensagem 1',
+                               content: 'Conteudo da mensagem',
+                               receiver_email: user1.email
+                              }
+                          }
       expect(response).to have_http_status(:success)
     end
 

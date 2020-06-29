@@ -3,7 +3,6 @@ class MessagesController < ApplicationController
   before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
   before_action :verify_author, only: [:show]
-  # render form for new message
 
   def new
     @message = Message.new
